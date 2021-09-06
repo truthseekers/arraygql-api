@@ -1,6 +1,10 @@
 const { ApolloServer } = require("apollo-server-express");
 const http = require("http");
 const express = require("express");
+const {
+  ApolloServerPluginDrainHttpServer,
+  ApolloServerPluginLandingPageGraphQLPlayground,
+} = require("apollo-server-core");
 
 const app = express();
 
@@ -14,7 +18,7 @@ type Query {
 
 const resolvers = {
   Query: {
-    helloWorld: () => `Hi there dude!`,
+    helloWorld: () => `Hi there dude!!`,
   },
 };
 
@@ -26,6 +30,10 @@ const corsOptions = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    ApolloServerPluginLandingPageGraphQLPlayground(),
+  ],
 });
 
 const startServer = async () => {
