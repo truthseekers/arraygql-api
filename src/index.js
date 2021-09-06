@@ -29,8 +29,20 @@ type User {
 const resolvers = {
   Query: {
     helloWorld: () => `Hi there dude!!`,
-    users: () => users,
+    users: () => {
+      console.log("users resolver: ", users);
+      return users;
+    },
   },
+  // User: {
+  //   id: (parent) => {
+  //     console.log("what is the parent? ", parent);
+  //     return parent.id;
+  //   },
+  //   firstName: (parent) => parent.firstName,
+  //   email: (parent) => parent.email,
+  //   age: (parent) => parent.age,
+  // },
 };
 
 const corsOptions = {
