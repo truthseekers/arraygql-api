@@ -30,19 +30,18 @@ const resolvers = {
   Query: {
     helloWorld: () => `Hi there dude!!`,
     users: () => {
-      console.log("users resolver: ", users);
       return users;
     },
   },
-  // User: {
-  //   id: (parent) => {
-  //     console.log("what is the parent? ", parent);
-  //     return parent.id;
-  //   },
-  //   firstName: (parent) => parent.firstName,
-  //   email: (parent) => parent.email,
-  //   age: (parent) => parent.age,
-  // },
+  User: {
+    id: (parent) => {
+      console.log("what is the parent? ", parent);
+      return parent.id;
+    },
+    firstName: (parent) => parent.firstName + "!!!",
+    email: (parent) => parent.email,
+    age: (parent) => (parent.age ? parent.age * 4 : parent.age),
+  },
 };
 
 const corsOptions = {
