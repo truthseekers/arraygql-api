@@ -1,0 +1,162 @@
+const todos = [
+  {
+    id: "1",
+    name: "eat lunch",
+    isComplete: false,
+    userId: "123",
+  },
+  {
+    id: "2",
+    name: "Buy grapes",
+    isComplete: false,
+    userId: "123",
+  },
+  {
+    id: "3",
+    name: "print report",
+    isComplete: false,
+    userId: "456",
+  },
+  {
+    id: "4",
+    name: "get donuts for client and myself",
+    isComplete: false,
+    userId: "123",
+  },
+  {
+    id: "5",
+    name: "Call Mom",
+    isComplete: false,
+    userId: "456",
+  },
+  {
+    id: "6",
+    name: "drink some juice",
+    isComplete: false,
+    userId: "123",
+  },
+  {
+    id: "7",
+    name: "one",
+    isComplete: false,
+    userId: "1",
+  },
+  {
+    id: "8",
+    name: "two",
+    isComplete: false,
+    userId: "1",
+  },
+  {
+    id: "9",
+    name: "three",
+    isComplete: false,
+    userId: "1",
+  },
+  {
+    id: "10",
+    name: "four",
+    isComplete: false,
+    userId: "1",
+  },
+  {
+    id: "11",
+    name: "five",
+    isComplete: false,
+    userId: "1",
+  },
+  {
+    id: "12",
+    name: "six",
+    isComplete: false,
+    userId: "1",
+  },
+  {
+    id: "13",
+    name: "seven",
+    isComplete: false,
+    userId: "1",
+  },
+  {
+    id: "14",
+    name: "eight",
+    isComplete: false,
+    userId: "1",
+  },
+  {
+    id: "15",
+    name: "nine",
+    isComplete: false,
+    userId: "1",
+  },
+  {
+    id: "16",
+    name: "ten",
+    isComplete: false,
+    userId: "1",
+  },
+  {
+    id: "17",
+    name: "eleven",
+    isComplete: true,
+    userId: "1",
+  },
+  {
+    id: "18",
+    name: "twelve",
+    isComplete: true,
+    userId: "1",
+  },
+  {
+    id: "19",
+    name: "thirteen",
+    isComplete: true,
+    userId: "1",
+  },
+  {
+    id: "20",
+    name: "fourteen",
+    isComplete: true,
+    userId: "1",
+  },
+  {
+    id: "21",
+    name: "fifteen",
+    isComplete: true,
+    userId: "1",
+  },
+  {
+    id: "22",
+    name: "sixteen",
+    isComplete: true,
+    userId: "1",
+  },
+  {
+    id: "23",
+    name: "seventeen",
+    isComplete: true,
+    userId: "1",
+  },
+  {
+    id: "24",
+    name: "eighteen",
+    isComplete: true,
+    userId: "1",
+  },
+  {
+    id: "25",
+    name: "nineteen",
+    isComplete: true,
+    userId: "1",
+  },
+  {
+    id: "26",
+    name: "twenty",
+    isComplete: true,
+    userId: "1",
+  },
+];
+
+module.exports = {
+  todos,
+};
