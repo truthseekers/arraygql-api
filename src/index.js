@@ -14,7 +14,7 @@ const httpServer = http.createServer(app);
 const typeDefs = `
 type Query {
     helloWorld: String!
-    users: [User!]!
+    users(text: String): [User!]!
 }
 
 type User {
@@ -29,7 +29,12 @@ type User {
 const resolvers = {
   Query: {
     helloWorld: () => `Hi there dude!!`,
-    users: () => {
+    users: (parent, args, context, info) => {
+      if (args.text) {
+        return users.filter((elem) =>
+          elem.firstName.toLowerCase().includes(args.text.toLowerCase())
+        );
+      }
       return users;
     },
   },
