@@ -5,6 +5,7 @@ const {
   ApolloServerPluginDrainHttpServer,
   ApolloServerPluginLandingPageGraphQLPlayground,
 } = require("apollo-server-core");
+const { users } = require("./data/users");
 
 const app = express();
 
@@ -13,12 +14,22 @@ const httpServer = http.createServer(app);
 const typeDefs = `
 type Query {
     helloWorld: String!
+    users: [User!]!
 }
+
+type User {
+  id: ID!
+  firstName: String!
+  email: String!
+  age: Int
+}
+
 `;
 
 const resolvers = {
   Query: {
     helloWorld: () => `Hi there dude!!`,
+    users: () => users,
   },
 };
 
