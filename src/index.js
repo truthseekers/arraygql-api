@@ -6,6 +6,7 @@ const {
   ApolloServerPluginLandingPageGraphQLPlayground,
 } = require("apollo-server-core");
 const { users } = require("./data/users");
+const { todos } = require("./data/todos");
 
 const app = express();
 
@@ -15,6 +16,7 @@ const typeDefs = `
 type Query {
     helloWorld: String!
     users(text: String): [User!]!
+    todos: [Todo!]!
 }
 
 type User {
@@ -22,6 +24,13 @@ type User {
   firstName: String!
   email: String!
   age: Int
+}
+
+type Todo {
+  id: ID!
+  name: String!
+  isComplete: Boolean!
+  userId: ID!
 }
 
 `;
@@ -36,6 +45,9 @@ const resolvers = {
         );
       }
       return users;
+    },
+    todos: (parent, args, context, info) => {
+      return todos;
     },
   },
   User: {
