@@ -16,7 +16,7 @@ const typeDefs = `
 type Query {
     helloWorld: String!
     users(text: String): [User!]!
-    todos: [Todo!]!
+    todos(takeStatus: String): [Todo!]!
 }
 
 type User {
@@ -47,7 +47,17 @@ const resolvers = {
       return users;
     },
     todos: (parent, args, context, info) => {
-      return todos;
+      let isComplete = args.takeStatus == "complete" ? true : false;
+
+      const allTodoItems = todos.filter((todo) => {
+        if (isComplete !== todo.isComplete) {
+          return;
+        }
+        return todos;
+      });
+
+      return allTodoItems;
+      // return todos;
     },
   },
   User: {
