@@ -16,7 +16,7 @@ const typeDefs = `
 type Query {
     helloWorld: String!
     users(text: String): [User!]!
-    todos(takeStatus: String): [Todo!]!
+    todos(filter: String, takeStatus: String, skip: Int, take: Int): [Todo!]!
 }
 
 type User {
@@ -53,8 +53,16 @@ const resolvers = {
         if (isComplete !== todo.isComplete) {
           return;
         }
-        return todos;
+        if (args.filter && !todo.name.includes(args.filter)) {
+          return;
+        }
+
+        return todo;
       });
+
+      if (args.skip || args.take) {
+        return allTodoItems.slice(args.skip, args.skip + args.take);
+      }
 
       return allTodoItems;
       // return todos;
