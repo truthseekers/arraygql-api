@@ -7,6 +7,8 @@ const {
 } = require("apollo-server-core");
 const { users } = require("./data/users");
 const { todos } = require("./data/todos");
+const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcrypt");
 
 const app = express();
 
@@ -17,6 +19,9 @@ type Query {
     helloWorld: String!
     users(text: String): [User!]!
     todos(filter: String, takeStatus: String, skip: Int, take: Int): [Todo!]!
+}
+type Mutation {
+  signup(firstName: String!, email: String!, password: String!, age: Int): User
 }
 
 type User {
@@ -44,6 +49,7 @@ const resolvers = {
           elem.firstName.toLowerCase().includes(args.text.toLowerCase())
         );
       }
+      console.log(users);
       return users;
     },
     todos: (parent, args, context, info) => {
@@ -68,14 +74,33 @@ const resolvers = {
       // return todos;
     },
   },
+  Mutation: {
+    signup: async (parent, args, context, info) => {
+      const password = await bcrypt.hash(args.password, 10);
+
+      console.log("password: ", password);
+
+      const newUser = {
+        id: uuidv4(),
+        firstName: args.firstName,
+        email: args.email,
+        password: password,
+        age: args.age,
+      };
+      console.log("args: ", args);
+      console.log("newUser is: ", newUser);
+      users.push(newUser);
+
+      return newUser;
+    },
+  },
   User: {
     id: (parent) => {
-      console.log("what is the parent? ", parent);
       return parent.id;
     },
-    firstName: (parent) => parent.firstName + "!!!",
+    firstName: (parent) => parent.firstName,
     email: (parent) => parent.email,
-    age: (parent) => (parent.age ? parent.age * 4 : parent.age),
+    age: (parent) => parent.age,
   },
 };
 
