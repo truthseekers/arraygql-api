@@ -22,6 +22,7 @@ type Query {
 }
 type Mutation {
   signup(firstName: String!, email: String!, password: String!, age: Int): User
+  createTodo(name: String!, isComplete: Boolean!, userId: ID!): Todo
 }
 
 type User {
@@ -92,6 +93,18 @@ const resolvers = {
       users.push(newUser);
 
       return newUser;
+    },
+    createTodo: async (parent, { name, isComplete, userId }, context, info) => {
+      const newTodo = {
+        id: uuidv4(),
+        name,
+        isComplete,
+        userId,
+      };
+
+      todos.push(newTodo);
+
+      return newTodo;
     },
   },
   User: {
