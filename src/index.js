@@ -23,6 +23,7 @@ type Query {
 type Mutation {
   signup(firstName: String!, email: String!, password: String!, age: Int): User
   createTodo(name: String!, isComplete: Boolean!, userId: ID!): Todo
+  deleteTodo(todoId: ID!): Todo
 }
 
 type User {
@@ -105,6 +106,12 @@ const resolvers = {
       todos.push(newTodo);
 
       return newTodo;
+    },
+    deleteTodo: (parent, args, context, info) => {
+      const indexToDelete = todos.findIndex((elem) => elem.id == args.todoId);
+
+      const deletedTodo = todos.splice(indexToDelete, 1);
+      return deletedTodo[0];
     },
   },
   User: {
