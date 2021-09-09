@@ -34,6 +34,7 @@ type User {
   firstName: String!
   email: String!
   age: Int
+  todos(text: String): [Todo!]!
 }
 
 type Todo {
@@ -168,6 +169,10 @@ const resolvers = {
     firstName: (parent) => parent.firstName,
     email: (parent) => parent.email,
     age: (parent) => parent.age,
+    todos: (parent, args, context, info) => {
+      console.log("args: ", args);
+      return todos.filter((todo) => todo.userId == parent.id);
+    },
   },
 };
 
