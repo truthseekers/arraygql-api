@@ -26,6 +26,7 @@ type Mutation {
   deleteTodo(todoId: ID!): Todo
   updateTodo(todoId: ID!, name: String, isComplete: Boolean): Todo
   deleteTodos(todoIds: [ID!]): BatchPayload!
+  resetTodos: BatchPayload!
 }
 
 type User {
@@ -146,6 +147,18 @@ const resolvers = {
       }
 
       return { count: deleteCount };
+    },
+    resetTodos: (parent, args, context, info) => {
+      let changeCount = 0;
+
+      for (let i = 0; i < todos.length; i++) {
+        if (todos[i].isComplete) {
+          todos[i].isComplete = false;
+          changeCount++;
+        }
+      }
+
+      return { count: changeCount };
     },
   },
   User: {
