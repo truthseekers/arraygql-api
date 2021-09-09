@@ -24,6 +24,8 @@ type Mutation {
   signup(firstName: String!, email: String!, password: String!, age: Int): User
   createTodo(name: String!, isComplete: Boolean!, userId: ID!): Todo
   deleteTodo(todoId: ID!): Todo
+  updateTodo(todoId: ID!, name: String, isComplete: Boolean): Todo
+  deleteTodos(todoIds: [ID!]): BatchPayload!
 }
 
 type User {
@@ -38,6 +40,10 @@ type Todo {
   name: String!
   isComplete: Boolean!
   userId: ID!
+}
+
+type BatchPayload {
+  count: Int!
 }
 
 `;
@@ -112,6 +118,34 @@ const resolvers = {
 
       const deletedTodo = todos.splice(indexToDelete, 1);
       return deletedTodo[0];
+    },
+    updateTodo: (parent, args, context, info) => {
+      const currentTodoIndex = todos.findIndex(
+        (todo) => todo.id == args.todoId
+      );
+
+      if (args.name) {
+        todos[currentTodoIndex].name = args.name;
+      }
+      if (args.hasOwnProperty("isComplete")) {
+        todos[currentTodoIndex].isComplete = args.isComplete;
+      }
+
+      return todos[currentTodoIndex];
+    },
+    deleteTodos: (parent, args, context, info) => {
+      let deleteCount = 0;
+      for (let i = 0; i < args.todoIds.length; i++) {
+        const indexToDelete = todos.findIndex(
+          (todo) => todo.id == args.todoIds[i]
+        );
+        if (indexToDelete.toString()) {
+          deleteCount++;
+          todos.splice(indexToDelete, 1);
+        }
+      }
+
+      return { count: deleteCount };
     },
   },
   User: {
