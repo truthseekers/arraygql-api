@@ -41,6 +41,7 @@ type Todo {
   id: ID!
   name: String!
   isComplete: Boolean!
+  user: User!
   userId: ID!
 }
 
@@ -184,6 +185,12 @@ const resolvers = {
     todos: (parent, args, context, info) => {
       console.log("args: ", args);
       return todos.filter((todo) => todo.userId == parent.id);
+    },
+  },
+  Todo: {
+    user: (parent) => {
+      const currentUser = users.find((user) => user.id == parent.userId);
+      return currentUser;
     },
   },
 };
