@@ -18,7 +18,7 @@ const typeDefs = `
 type Query {
     helloWorld: String!
     users(text: String): [User!]!
-    todos(filter: String, takeStatus: String, skip: Int, take: Int): [Todo!]!
+    todos(filter: String, takeStatus: String, skip: Int, take: Int): Todos!
 }
 type Mutation {
   signup(firstName: String!, email: String!, password: String!, age: Int): User
@@ -42,6 +42,11 @@ type Todo {
   name: String!
   isComplete: Boolean!
   userId: ID!
+}
+
+type Todos {
+  count: Int!
+  todoItems: [Todo!]
 }
 
 type BatchPayload {
@@ -77,10 +82,17 @@ const resolvers = {
       });
 
       if (args.skip || args.take) {
-        return allTodoItems.slice(args.skip, args.skip + args.take);
+        return {
+          todoItems: allTodoItems.slice(args.skip, args.skip + args.take),
+          count: allTodoItems.length,
+        };
       }
 
-      return allTodoItems;
+      return {
+        todoItems: allTodoItems,
+        count: allTodoItems.length,
+      };
+      // return allTodoItems;
       // return todos;
     },
   },
