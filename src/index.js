@@ -24,6 +24,18 @@ passport.use(
     });
 
     console.log("matching user: ", matchingUser);
+
+    let error = matchingUser ? "" : new Error("User not found!");
+
+    if (matchingUser) {
+      const valid = await bcrypt.compare(password, matchingUser.password);
+
+      error = valid ? "" : new Error("Invalid password");
+    }
+
+    console.log("Login three");
+
+    done(error, matchingUser); // returns matchingUser back to return value of calling context.authenticate in the resolver.
   })
 );
 
@@ -116,17 +128,19 @@ const resolvers = {
     },
   },
   Mutation: {
-    login: (parent, { email, password }, context, info) => {
+    login: async (parent, { email, password }, context, info) => {
       console.log("login one");
 
       // prove the user is who they say they are, and that this user is already signed up.
       // passport provides a shell, but we have to fill in the details. We tell it HOW to authenticate.
       // pass in the login details required to verify. see new GraphQLLocalStrategy for step 2.
 
-      const { user } = context.authenticate("graphql-local", {
+      const { user } = await context.authenticate("graphql-local", {
         email, // arg passed in
         password, // arg passed in.
       });
+
+      console.log("Login 4: user - ", user);
     },
     signup: async (parent, args, context, info) => {
       const password = await bcrypt.hash(args.password, 10);
