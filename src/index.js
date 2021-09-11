@@ -9,6 +9,23 @@ const { users } = require("./data/users");
 const { todos } = require("./data/todos");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
+const passport = require("passport");
+const { GraphQLLocalStrategy, buildContext } = require("graphql-passport");
+
+passport.use(
+  new GraphQLLocalStrategy(async (email, password, done) => {
+    console.log("Login two");
+    console.log("email from args: ", email);
+
+    const matchingUser = await users.find((user) => {
+      if (user.email == email) {
+        return user;
+      }
+    });
+
+    console.log("matching user: ", matchingUser);
+  })
+);
 
 const app = express();
 
@@ -21,6 +38,7 @@ type Query {
     todos(filter: String, takeStatus: String, skip: Int, take: Int): Todos!
 }
 type Mutation {
+  login(email: String!, password: String!): User
   signup(firstName: String!, email: String!, password: String!, age: Int): User
   createTodo(name: String!, isComplete: Boolean!, userId: ID!): Todo
   deleteTodo(todoId: ID!): Todo
@@ -98,6 +116,18 @@ const resolvers = {
     },
   },
   Mutation: {
+    login: (parent, { email, password }, context, info) => {
+      console.log("login one");
+
+      // prove the user is who they say they are, and that this user is already signed up.
+      // passport provides a shell, but we have to fill in the details. We tell it HOW to authenticate.
+      // pass in the login details required to verify. see new GraphQLLocalStrategy for step 2.
+
+      const { user } = context.authenticate("graphql-local", {
+        email, // arg passed in
+        password, // arg passed in.
+      });
+    },
     signup: async (parent, args, context, info) => {
       const password = await bcrypt.hash(args.password, 10);
 
@@ -203,6 +233,9 @@ const corsOptions = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: ({ req, res }) => {
+    return buildContext({ req, res });
+  },
   plugins: [
     ApolloServerPluginDrainHttpServer({ httpServer }),
     ApolloServerPluginLandingPageGraphQLPlayground(),
