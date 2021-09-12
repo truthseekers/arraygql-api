@@ -18,6 +18,18 @@ passport.serializeUser((user, done) => {
   done(null, user.id); // what you want to pass into the session (you could pass entire user if you wanted.
 });
 
+passport.deserializeUser((id, done) => {
+  const currentUser = users.find((user) => {
+    if (user.id == id) {
+      return user;
+    }
+  });
+
+  console.log("deserialized user in passport.deserializeUser: ", currentUser);
+
+  done(null, currentUser);
+});
+
 passport.use(
   new GraphQLLocalStrategy(async (email, password, done) => {
     console.log("Login two");
@@ -47,9 +59,6 @@ passport.use(
 
 const app = express();
 
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.use(
   session({
     genid: () => uuidv4(),
@@ -59,6 +68,9 @@ app.use(
   })
 );
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 const httpServer = http.createServer(app);
 
 const typeDefs = `
@@ -66,6 +78,7 @@ type Query {
     helloWorld: String!
     users(text: String): [User!]!
     todos(filter: String, takeStatus: String, skip: Int, take: Int): Todos!
+    me: User
 }
 type Mutation {
   login(email: String!, password: String!): User
@@ -144,6 +157,10 @@ const resolvers = {
       // return allTodoItems;
       // return todos;
     },
+    me: (parent, args, context, info) => {
+      console.log("getUser from me: ", context.getUser());
+      return context.getUser();
+    },
   },
   Mutation: {
     login: async (parent, { email, password }, context, info) => {
@@ -161,6 +178,8 @@ const resolvers = {
       console.log("Login 4: user - ", user);
 
       context.login(user); // calls passport.serializeUser();
+
+      return user;
     },
     signup: async (parent, args, context, info) => {
       const password = await bcrypt.hash(args.password, 10);
