@@ -11,6 +11,12 @@ const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 const { GraphQLLocalStrategy, buildContext } = require("graphql-passport");
+const session = require("express-session");
+const SESSION_SECRET = "asdlfkwheifahoalkhj12hahiw";
+
+passport.serializeUser((user, done) => {
+  done(null, user.id); // what you want to pass into the session (you could pass entire user if you wanted.
+});
 
 passport.use(
   new GraphQLLocalStrategy(async (email, password, done) => {
@@ -40,6 +46,18 @@ passport.use(
 );
 
 const app = express();
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(
+  session({
+    genid: () => uuidv4(),
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false, // prevents new empty sessions from being created.
+  })
+);
 
 const httpServer = http.createServer(app);
 
@@ -141,6 +159,8 @@ const resolvers = {
       });
 
       console.log("Login 4: user - ", user);
+
+      context.login(user); // calls passport.serializeUser();
     },
     signup: async (parent, args, context, info) => {
       const password = await bcrypt.hash(args.password, 10);
