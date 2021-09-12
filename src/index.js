@@ -201,6 +201,13 @@ const resolvers = {
       console.log("newUser is: ", newUser);
       users.push(newUser);
 
+      const { user } = await context.authenticate("graphql-local", {
+        email: args.email,
+        password: args.password,
+      });
+
+      context.login(user);
+
       return newUser;
     },
     createTodo: async (parent, { name, isComplete, userId }, context, info) => {
