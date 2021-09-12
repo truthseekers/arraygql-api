@@ -18,9 +18,15 @@ const Query = {
       throw new AuthenticationError("Must be logged in to view todos!");
     }
 
+    const user = context.getUser();
+
     let isComplete = args.takeStatus == "complete" ? true : false;
 
     const allTodoItems = todos.filter((todo) => {
+      if (todo.userId !== user.id) {
+        return;
+      }
+
       if (isComplete !== todo.isComplete) {
         return;
       }
