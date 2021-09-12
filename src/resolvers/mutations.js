@@ -2,6 +2,7 @@ const { todos } = require("../data/todos");
 const { users } = require("../data/users");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
+const { AuthenticationError } = require("apollo-server-express");
 
 const Mutation = {
   login: async (parent, { email, password }, context, info) => {
@@ -26,6 +27,15 @@ const Mutation = {
     context.logout();
   },
   signup: async (parent, args, context, info) => {
+    const matchingUser = await users.find((user) => {
+      if (user.email == args.email) {
+        return user;
+      }
+    });
+    if (matchingUser) {
+      throw new AuthenticationError("User already exists!");
+    }
+
     const password = await bcrypt.hash(args.password, 10);
 
     console.log("password: ", password);

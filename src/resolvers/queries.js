@@ -1,5 +1,6 @@
 const { users } = require("../data/users");
 const { todos } = require("../data/todos");
+const { AuthenticationError } = require("apollo-server-express");
 
 const Query = {
   helloWorld: () => `Hi there dude!!`,
@@ -13,6 +14,10 @@ const Query = {
     return users;
   },
   todos: (parent, args, context, info) => {
+    if (!context.isAuthenticated()) {
+      throw new AuthenticationError("Must be logged in to view todos!");
+    }
+
     let isComplete = args.takeStatus == "complete" ? true : false;
 
     const allTodoItems = todos.filter((todo) => {
