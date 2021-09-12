@@ -82,6 +82,7 @@ type Query {
 }
 type Mutation {
   login(email: String!, password: String!): User
+  logout: Boolean
   signup(firstName: String!, email: String!, password: String!, age: Int): User
   createTodo(name: String!, isComplete: Boolean!, userId: ID!): Todo
   deleteTodo(todoId: ID!): Todo
@@ -180,6 +181,9 @@ const resolvers = {
       context.login(user); // calls passport.serializeUser();
 
       return user;
+    },
+    logout: (parent, args, context, info) => {
+      context.logout();
     },
     signup: async (parent, args, context, info) => {
       const password = await bcrypt.hash(args.password, 10);
