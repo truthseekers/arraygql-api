@@ -14,6 +14,7 @@ const session = require("express-session");
 const SESSION_SECRET = "asdlfkwheifahoalkhj12hahiw";
 const { typeDefs } = require("./typeDefs");
 const { resolvers } = require("./resolvers");
+require("dotenv").config();
 
 passport.serializeUser((user, done) => {
   done(null, user.id); // what you want to pass into the session (you could pass entire user if you wanted.
@@ -76,8 +77,10 @@ const httpServer = http.createServer(app);
 
 const corsOptions = {
   credentials: true,
-  origin: [process.env.ORIGIN, "https://studio.apollographql.com"],
+  origin: ["http://localhost:3000", "https://studio.apollographql.com"],
 };
+
+console.log("origin: ", process.env.ORIGIN);
 
 const server = new ApolloServer({
   typeDefs,
