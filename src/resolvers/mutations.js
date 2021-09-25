@@ -68,6 +68,12 @@ const Mutation = {
       userId,
     };
 
+    // Begin. Sorry, I added this error handler after starting on the front end tutorials. You can keep it or delete it
+    if (!name) {
+      throw new Error("Todo must not be blank!");
+    }
+    // end.
+
     todos.push(newTodo);
 
     return newTodo;
