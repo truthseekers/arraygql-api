@@ -8,7 +8,7 @@ type Query {
 type Mutation {
   login(email: String!, password: String!): User
   logout: Boolean
-  signup(firstName: String!, email: String!, password: String!, age: Int): User
+  signup(firstName: String!, email: String!, password: String!, age: Int, paymentMethod: String!): User
   createTodo(name: String!, isComplete: Boolean!, userId: ID!): Todo
   deleteTodo(todoId: ID!): Todo
   updateTodo(todoId: ID!, name: String, isComplete: Boolean): Todo

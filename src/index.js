@@ -27,15 +27,15 @@ passport.deserializeUser((id, done) => {
     }
   });
 
-  console.log("deserialized user in passport.deserializeUser: ", currentUser);
+  // console.log("deserialized user in passport.deserializeUser: ", currentUser);
 
   done(null, currentUser);
 });
 
 passport.use(
   new GraphQLLocalStrategy(async (email, password, done) => {
-    console.log("Login two");
-    console.log("email from args: ", email);
+    // console.log("Login two");
+    // console.log("email from args: ", email);
 
     const matchingUser = await users.find((user) => {
       if (user.email == email) {
@@ -43,7 +43,7 @@ passport.use(
       }
     });
 
-    console.log("matching user: ", matchingUser);
+    // console.log("matching user: ", matchingUser);
 
     let error = matchingUser ? "" : new Error("User not found!");
 
@@ -53,7 +53,7 @@ passport.use(
       error = valid ? "" : new Error("Invalid password");
     }
 
-    console.log("Login three");
+    // console.log("Login three");
 
     done(error, matchingUser); // returns matchingUser back to return value of calling context.authenticate in the resolver.
   })
@@ -80,7 +80,7 @@ const corsOptions = {
   origin: ["http://localhost:3000", "https://studio.apollographql.com"],
 };
 
-console.log("origin: ", process.env.ORIGIN);
+// console.log("origin: ", process.env.ORIGIN);
 
 const server = new ApolloServer({
   typeDefs,

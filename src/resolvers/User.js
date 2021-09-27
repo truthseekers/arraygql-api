@@ -8,7 +8,7 @@ const User = {
   email: (parent) => parent.email,
   age: (parent) => parent.age,
   todos: (parent, args, context, info) => {
-    console.log("args: ", args);
+    // console.log("args: ", args);
     return todos.filter((todo) => todo.userId == parent.id);
   },
 };

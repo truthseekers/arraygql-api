@@ -3,10 +3,13 @@ const { users } = require("../data/users");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
 const { AuthenticationError } = require("apollo-server-express");
+const { Stripe } = require("stripe");
+require("dotenv").config();
+const stripe = new Stripe(process.env.SECRET_KEY);
 
 const Mutation = {
   login: async (parent, { email, password }, context, info) => {
-    console.log("login one");
+    // console.log("login one");
 
     // prove the user is who they say they are, and that this user is already signed up.
     // passport provides a shell, but we have to fill in the details. We tell it HOW to authenticate.
@@ -17,7 +20,7 @@ const Mutation = {
       password, // arg passed in.
     });
 
-    console.log("Login 4: user - ", user);
+    // console.log("Login 4: user - ", user);
 
     context.login(user); // calls passport.serializeUser();
 
@@ -27,6 +30,7 @@ const Mutation = {
     context.logout();
   },
   signup: async (parent, args, context, info) => {
+    console.log("args: ", args);
     const matchingUser = await users.find((user) => {
       if (user.email == args.email) {
         return user;
@@ -36,9 +40,28 @@ const Mutation = {
       throw new AuthenticationError("User already exists!");
     }
 
-    const password = await bcrypt.hash(args.password, 10);
+    const customer = await stripe.customers.create({
+      name: args.firstName,
+      payment_method: args.paymentMethod,
+      invoice_settings: {
+        default_payment_method: args.paymentMethod,
+      },
+    });
+    console.log("made the customer!");
 
-    console.log("password: ", password);
+    const subscription = await stripe.subscriptions.create({
+      customer: customer.id,
+      items: [{ price: process.env.FANCY_BIZ_TOOL }],
+      default_payment_method: args.paymentMethod,
+    });
+    console.log("testing subscription: ", subscription);
+
+    if (subscription.status === "incomplete") {
+      console.log("problem");
+      throw new Error("There was a problem with your card");
+    }
+
+    const password = await bcrypt.hash(args.password, 10);
 
     const newUser = {
       id: uuidv4(),
@@ -47,8 +70,6 @@ const Mutation = {
       password: password,
       age: args.age,
     };
-    console.log("args: ", args);
-    console.log("newUser is: ", newUser);
     users.push(newUser);
 
     const { user } = await context.authenticate("graphql-local", {

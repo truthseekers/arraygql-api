@@ -10,7 +10,7 @@ const Query = {
         elem.firstName.toLowerCase().includes(args.text.toLowerCase())
       );
     }
-    console.log(users);
+    // console.log(users);
     return users;
   },
   todos: (parent, args, context, info) => {
@@ -52,7 +52,7 @@ const Query = {
     // return todos;
   },
   me: (parent, args, context, info) => {
-    console.log("getUser from me: ", context.getUser());
+    // console.log("getUser from me: ", context.getUser());
     return context.getUser();
   },
 };
