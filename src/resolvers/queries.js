@@ -20,6 +20,13 @@ const Query = {
 
     const user = context.getUser();
 
+    if (!args.hasOwnProperty("takeStatus")) {
+      return {
+        todoItems: todos,
+        count: todos.length,
+      };
+    }
+
     let isComplete = args.takeStatus == "complete" ? true : false;
 
     const allTodoItems = todos.filter((todo) => {
