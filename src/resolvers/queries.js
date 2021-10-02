@@ -20,10 +20,19 @@ const Query = {
 
     const user = context.getUser();
 
+    // Sorry lol. This is at the very end when I realized that we only want todos for the specific user and we WERE getting all of the todos. This is just a quick hack to fix that without risking breaking any of the tutorials.
+    const otherAllTodoItems = todos.filter((todo) => {
+      if (todo.userId !== user.id) {
+        return;
+      }
+
+      return todo;
+    });
+
     if (!args.hasOwnProperty("takeStatus")) {
       return {
-        todoItems: todos,
-        count: todos.length,
+        todoItems: otherAllTodoItems,
+        count: otherAllTodoItems.length,
       };
     }
 
